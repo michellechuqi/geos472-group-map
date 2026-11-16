@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xml:lang="en">
+	<Esri>
+		<CreaDate>20260625</CreaDate>
+		<CreaTime>23425400</CreaTime>
+		<ArcGISFormat>1.0</ArcGISFormat>
+		<SyncOnce>TRUE</SyncOnce>
+		<scaleRange>
+			<minScale>150000000</minScale>
+			<maxScale>5000</maxScale>
+		</scaleRange>
+		<ArcGISProfile>ItemDescription</ArcGISProfile>
+	</Esri>
+	<dataIdInfo>
+		<idCitation>
+			<resTitle>Administrative Boundary</resTitle>
+		</idCitation>
+		<idAbs>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Greater Vancouver Regional District municipal boundaries - DRAFT- The boundaries have been modified to the 'letter patent' supplied by the Ministry of Municipal Affairs.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</idAbs>
+		<idCredit>Metro Vancouver</idCredit>
+		<searchKeys>
+			<keyword>municipal;administrative;boundary</keyword>
+		</searchKeys>
+		<idPurp>Metro Vancouver Regional District municipal boundaries. The boundaries have been modified to the 'Letters Patent' supplied by the Ministry of Municipal Affairs. Metro Vancouver is comprised of 22 member municipalities, 1 electoral area, and one treaty First Nation. The administrative boundaries delineate the boundaries of these areas.</idPurp>
+		<resConst>
+			<Consts>
+				<useLimit>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV STYLE="font-size:12pt"&gt;&lt;P&gt;&lt;A href="https://gisportal.metrovancouver.org:443/portal/apps/sites/#/open-data-portal/pages/open-government-licence" target="_blank" STYLE="text-decoration:underline;"&gt;&lt;SPAN&gt;Open Government Licence | Metro Vancouver Open Data Portal&lt;/SPAN&gt;&lt;/A&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</useLimit>
+			</Consts>
+		</resConst>
+	</dataIdInfo>
+	<mdHrLv>
+		<ScopeCd value="005">
+		</ScopeCd>
+	</mdHrLv>
+	<Binary>
+		<Thumbnail>
+			<Data EsriPropertyType="PictureX">/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0a
+HBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIy
+MjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCADIASwDASIA
+AhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQA
+AAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3
+ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWm
+p6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEA
+AwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSEx
+BhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElK
+U1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3
+uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3+iii
+gAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKA
+CiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKaRlhn0oAdketGR60m1f7o/Kjav90fl
+QAuR60z+LknB6YNO2r/dH5UbV9B+VABtGep/OjaPU/nS0UAJtHv+dG0e/wCdLRQAm0e/50injBPI
+p1IVB9fwNAC0Um33P50ifd5OaAHUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAU
+UUUAFFFNGSTyeDQA6io1JPBJ55FP2n+8aAFpp++PpS4P940Ac5yTQAtFFFABRRRQAUUUUAFFFFAB
+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
+BRRRQAUUUUAFFFFAH//Z</Data>
+		</Thumbnail>
+	</Binary>
+	<mdDateSt Sync="TRUE">20221215</mdDateSt>
+</metadata>
