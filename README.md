@@ -1,6 +1,5 @@
 # geos472-group-map
-For final project with Uku, Ira, Michelle, Janice.
-
+For final project with Uku, Ira, Michelle.
 ## DEM files
 Downloaded from https://catalogue.data.gov.bc.ca/dataset/digital-elevation-model-for-british-columbia-cded-1-250-000
 
