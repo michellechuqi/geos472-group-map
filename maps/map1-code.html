@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+<!-- THIS MAP IS MISLEADING: choropleth varies by population and not population density. I will fix this
+ later on ArcGIS. -->
+ 
 <!-- Code varies from lectures:
  * 472 - MapLibre - Filtering 2 - A way to highlight trees by taxa
  * 472 - MapLibre - Turf 7 - The user sets the distance
@@ -10,7 +13,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Map 1: Dissemination Areas in Metro Vancouver coloured by population as reported in the 2021 Census</title>
+    <title>Map 1: WORK IN PROGRESS: Dissemination Areas in Metro Vancouver coloured by population as reported in the 2021 Census</title>
 
     <!-- Load MapLibre's stylesheet (CSS). Its code (JavaScript) is loaded below, in the script. -->
     <link
@@ -108,11 +111,11 @@
         'fill-color': ['step', ['get', 'population'], 
         // ranges below from Simply Analytics
         // colour scheme from https://colorbrewer2.org/#type=sequential&scheme=RdPu&n=5
-        '#feebe2', // population below 400: pale pink
-        401, '#fbb4b9', // pop of 401 to 484
-        485, '#f768a1', // pop of 485 to 576
-        577, '#c51b8a', // pop of 577 to 757
-        758, '#7a0177', // pop of 758 to 29669: darkest pink
+        '#feebe2', // population below 3723: pale pink
+        3724, '#fbb4b9', // pop of 3724 to 4607
+        4608, '#f768a1', // pop of 4608 to 5446
+        5447, '#c51b8a', // pop of 5447 to 6590
+        6591, '#7a0177', // pop of 6591 to 29669: darkest pink
       ],
       'fill-opacity': 0.4,
       'fill-outline-color': '#000000' // black

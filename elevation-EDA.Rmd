@@ -1,0 +1,66 @@
+---
+title: "Examining elevation distribution of Metro Vancouver Dissemination Areas"
+author: "Michelle Huang"
+date: "`r Sys.Date()`"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  comment = NA
+)
+```
+
+Packages used: sf, ggplot2, classInt, dplyr.
+
+```{r, message=FALSE}
+library(sf)
+library(ggplot2)
+library(classInt)
+library(dplyr)
+```
+
+
+Reading GeoJSON:
+```{r}
+DAs <- st_read('~/Desktop/UBC/GEOS472/geos472-group-map/maps/zonal01.geojson')
+```
+
+Examining elevation distribution.
+Note that elevation unit is metres above mean sea level.
+```{r}
+summary(DAs$elevation)
+```
+
+Elevation distribution visualised via histogram:
+```{r}
+ggplot(DAs, aes(x = elevation)) +
+  geom_histogram(
+    bins = 30,
+    fill = "steelblue",
+    colour = "black"
+  ) +
+  labs(
+    title = "Distribution of DA Elevations",
+    x = "Elevation (metres above mean sea level)",
+    y = "Number of Dissemination Areas"
+  )
+```
+
+Via boxplot:
+```{r}
+ggplot(DAs, aes(y = elevation)) +
+  geom_boxplot() +
+  labs(
+    title = "Distribution of Elevation",
+    y = "Elevation",
+    x = ""
+  )
+```
+
+Calculating natural breaks ranges for 5 classes:
+```{r}
+nb_DAs <- classIntervals(DAs$elevation, n = 5, style = 'jenks')
+nb_DAs$brks
+```
+Strange...I KNOW parts of Metro Vancouver are below sea level right now, so why is the lowest value 0 and not something negative?
