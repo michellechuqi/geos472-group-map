@@ -1,5 +1,5 @@
 ---
-title: "Examining elevation distribution of Metro Vancouver Dissemination Areas"
+title: "Examining elevation and population distribution of Metro Vancouver Dissemination Areas"
 author: "Michelle Huang"
 date: "`r Sys.Date()`"
 output: html_document
@@ -10,6 +10,7 @@ knitr::opts_chunk$set(
   comment = NA
 )
 ```
+## For elevation
 
 Packages used: sf, ggplot2, classInt, dplyr.
 
@@ -19,7 +20,6 @@ library(ggplot2)
 library(classInt)
 library(dplyr)
 ```
-
 
 Reading GeoJSON:
 ```{r}
@@ -47,20 +47,45 @@ ggplot(DAs, aes(x = elevation)) +
   )
 ```
 
-Via boxplot:
+Calculating natural breaks ranges for 5 classes:
 ```{r}
-ggplot(DAs, aes(y = elevation)) +
-  geom_boxplot() +
+nb_elevation <- classIntervals(DAs$elevation, n = 5, style = 'jenks')
+nb_elevation$brks
+```
+So elevation should be classed as 0 to 30, 31 to 69, 70 to 112, 123 to 187, 188 to 255.
+
+## For population
+Summary statistics:
+```{r}
+summary(DAs$population)
+```
+
+Distribution of population via histogram:
+```{r}
+ggplot(DAs, aes(x = population)) +
+  geom_histogram(
+    bins = 30,
+    fill = "steelblue",
+    colour = "black"
+  ) +
   labs(
-    title = "Distribution of Elevation",
-    y = "Elevation",
-    x = ""
+    title = "Distribution of DA Populations",
+    x = "Count population",
+    y = "Number of Dissemination Areas"
   )
 ```
 
-Calculating natural breaks ranges for 5 classes:
+via boxplot:
 ```{r}
-nb_DAs <- classIntervals(DAs$elevation, n = 5, style = 'jenks')
-nb_DAs$brks
+ggplot(DAs, aes(x=population)) +
+  geom_boxplot(fill= 'steelblue', colour = 'black')
 ```
-Strange...I KNOW parts of Metro Vancouver are below sea level right now, so why is the lowest value 0 and not something negative?
+
+TO-DO: 
+
+* need to remove DAs that are outliers for population because idk why they are above like 1000.
+
+General: 
+
+* calculate population DENSITY for Map1
+* complete elevation visualisation (Map2?)
