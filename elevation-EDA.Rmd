@@ -23,7 +23,7 @@ library(dplyr)
 
 Reading GeoJSON:
 ```{r}
-DAs <- st_read('~/Desktop/UBC/GEOS472/geos472-group-map/maps/zonal01.geojson')
+DAs <- st_read('https://michellechuqi.github.io/geos472-group-map/maps/zonal01.geojson')
 ```
 
 Examining elevation distribution.
