@@ -86,6 +86,28 @@
         });
     });
 
+// ================================
+// D. POPUPS  
+// ================================
+
+  // from Day 14 - Filtering 5 - A popup at the tree the mouse is over
+  // I also referenced my work in Lab 2
+  const hoverPopup = new maplibregl.Popup({closeButton: false});
+  function hoverDA(event) {
+    const DA = event.features[0].properties;
+    hoverPopup.setLngLat(event.lngLat);
+    hoverPopup.setHTML(
+      `DA name and location: ${DA.NAME}<br>
+       DA elevation: ${DA.elevation}`
+      );
+    hoverPopup.addTo(map);
+  }
+  function leaveDA() {
+    hoverPopup.remove();
+  }
+  map.on('mousemove', 'DAs-layer', hoverDA);
+  map.on('mouseleave', 'DAs-layer', leaveDA);
+
     </script>
   </body>
 </html>
