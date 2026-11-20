@@ -16,7 +16,8 @@
 * I didn't know how to add a label to seaLevelNumberEntry.
 
 ### From B. STYLING
-* didn't know how to create a choropleth style so I specified that I have a geojson file where one property is 'population'.
+* I didn't know how to create a choropleth style so I specified that I have a geojson file where one property is 'population'.
+* I didn't know how to create a class for one specific value. ChatGPT said to use 'case'.
 
 ### From C. ADDING SOURCES AND LAYERS
 * in the first map.addLayer block, I didn't know 'stroke' should instead be 'fill-outline-color'.

@@ -50,41 +50,46 @@
 // ========================== 
 // B. STYLING 
 // ==========================    
-      // symbology for DAs: choropleth colours vary by population
+    // symbology for DAs: choropleth colours vary by population
     const elevationPaint = {
-        'fill-color': ['step', ['get', 'elevation'], 
-        // ranges below from R (see documentation)
-        // colour scheme from https://colorbrewer2.org/#type=sequential&scheme=RdPu&n=5
-        '#ffffd4', // population 0 to 30: pale orange
-        31, '#fed98e', // pop of 31 to 69
-        70, '#fe9929', // pop of 70 to 112
-        123, '#d95f0e', // pop of 123 to 187
-        188, '#993404', // pop of 188 to 255: darkest orange
+      'fill-color': [
+        'case', 
+        ['==', ['get', 'elevation'], 255], '#bdbdbd', // for DAs with specific elevation of 255
+
+        ['step', ['get', 'elevation'], 
+          // ranges below from R (see documentation)
+          // colour scheme from https://colorbrewer2.org/#type=sequential&scheme=RdPu&n=5
+          '#ffffd4', // population 0 to 30: pale orange
+          31, '#fed98e', // pop of 31 to 69
+          70, '#fe9929', // pop of 70 to 112
+          123, '#d95f0e', // pop of 123 to 187
+          188, '#993404', // pop of 188 to 247: darkest orange
+          ]
       ],
-      'fill-opacity': 0.4,
+      'fill-opacity': 0.6,
       'fill-outline-color': '#000000' // black
     };
 
 // ================================
 // C. ADDING SOURCES AND LAYERS I 
 // ================================
-    map.on('load', async function() { // map.on from Day 15-Turf 7 lecture
-        const response = await fetch(url);
-        const DAs = await response.json();
-        console.log(DAs.features.length + ' Dissemination Areas');
+  map.on('load', async function() { // map.on from Day 15-Turf 7 lecture
+      const response = await fetch(url);
+      const DAs = await response.json();
+      console.log(DAs.features.length + ' Dissemination Areas');
 
-        map.addSource('DAs-source', {
-            type: 'geojson',
-            data: url,
-            attribution: 'Dissemination Areas in Metro Vancouver, Simply Analytics'
-        });
-        map.addLayer({
-            id: 'DAs-layer',
-            type: 'fill',
-            source: 'DAs-source',
-            paint: elevationPaint
-        });
-    });
+      map.addSource('DAs-source', {
+          type: 'geojson',
+          data: url,
+          attribution: 'Dissemination Areas in Metro Vancouver, Simply Analytics'
+      });
+      map.addLayer({
+          id: 'DAs-layer',
+          type: 'fill',
+          source: 'DAs-source',
+          paint: elevationPaint
+      });
+  });
 
 // ================================
 // D. POPUPS  

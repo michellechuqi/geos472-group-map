@@ -47,12 +47,22 @@ ggplot(DAs, aes(x = elevation)) +
   )
 ```
 
+Are DAs with no elevation data categorised as NA or 255?
+```{r}
+sum(is.na(DAs$elevation))
+sum(DAs$elevation == 255)
+```
+There are 50 DAs with an elevation value of 255, aka with no elevation value available.
+The DA with the highest actual elevation value is 247.
+
 Calculating natural breaks ranges for 5 classes:
 ```{r}
 nb_elevation <- classIntervals(DAs$elevation, n = 5, style = 'jenks')
 nb_elevation$brks
 ```
-So elevation should be classed as 0 to 30, 31 to 69, 70 to 112, 123 to 187, 188 to 255.
+So elevation should be classed as 0 to 30, 31 to 69, 70 to 112, 123 to 187, 188 to 247.
+A special class is for DAs with elevation = 255.
+
 
 ## For population
 Summary statistics:
@@ -88,4 +98,5 @@ TO-DO:
 General: 
 
 * calculate population DENSITY for Map1
+* might need to change how elevation is summarised: from majority to average?
 * complete elevation visualisation (Map2?)
