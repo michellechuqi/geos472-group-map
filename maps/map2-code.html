@@ -10,7 +10,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Map 2: WORK IN PROGRESS</title>
+    <title>Map 2: Visualisation of elevation across Metro Vancouver</title>
 
     <!-- Load MapLibre's stylesheet (CSS). Its code (JavaScript) is loaded below, in the script. -->
     <link
@@ -25,11 +25,8 @@
     <div id="mapid" style="width: 800px; height: 500px;"></div>
     <!-- Buttons  -->
     <div id="controls" style="margin: 15px;">
-      <button id="showAllDAsButton">Show All Dissemination Areas</button>
-      <span style="display: inline-block; width: 30px;"></span>
-      <label for="seaLevelNumberEntry">Enter projected sea level in metres: </label>
-      <input type="number" id="seaLevelNumberEntry" placeholder="e.g. 1" step="1">
-      <button id="highlightDAsButton">Highlight Affected Dissemination Areas</button>
+      <button id="contourButton">Toggle Contour View</button>
+      <button id="demButton">Toggle DEM View</button>
     </div>
 
     <script type="module">
@@ -48,21 +45,21 @@
     window.map = map;
 
     // url of raw data of Metro Van DAs from geos472-group-map GitHub repo:
-    const url = 'https://raw.githubusercontent.com/michellechuqi/geos472-group-map/main/zonal01.geojson';
+    const url = 'https://raw.githubusercontent.com/michellechuqi/geos472-group-map/main/maps/zonal01.geojson';
 
 // ========================== 
 // B. STYLING 
 // ==========================    
       // symbology for DAs: choropleth colours vary by population
-    const DAsPaint = {
-        'fill-color': ['step', ['get', 'population'], 
-        // ranges below from Simply Analytics
+    const elevationPaint = {
+        'fill-color': ['step', ['get', 'elevation'], 
+        // ranges below from R (see documentation)
         // colour scheme from https://colorbrewer2.org/#type=sequential&scheme=RdPu&n=5
-        '#feebe2', // population below 400: pale pink
-        401, '#fbb4b9', // pop of 401 to 484
-        485, '#f768a1', // pop of 485 to 576
-        577, '#c51b8a', // pop of 577 to 757
-        758, '#7a0177', // pop of 758 to 29669: darkest pink
+        '#ffffd4', // population 0 to 30: pale orange
+        31, '#fed98e', // pop of 31 to 69
+        70, '#fe9929', // pop of 70 to 112
+        123, '#d95f0e', // pop of 123 to 187
+        188, '#993404', // pop of 188 to 255: darkest orange
       ],
       'fill-opacity': 0.4,
       'fill-outline-color': '#000000' // black
@@ -85,41 +82,9 @@
             id: 'DAs-layer',
             type: 'fill',
             source: 'DAs-source',
-            paint: DAsPaint
+            paint: elevationPaint
         });
     });
-
-// ==========================
-// D. HIGHLIGHT DAs BUTTON
-// ==========================  
-    function showAllDAs() {
-        addDAs();
-        map.setFilter('DAs-layer', null);
-    }
-
-    function addDAs() {
-        if (map.getSource('DAs-source')){
-            return;
-        }
-    }
-    function highlightDAs() {
-        addDAs();
-        const seaLevelEntry = document.getElementById('seaLevelNumberEntry');
-        const DAsToHighlight = seaLevelEntry.value;
-        if (DAsToHighlight === '') {
-            showAllDAs();
-            return;
-        } // else
-        map.setFilter('DAs-layer', ['<=', ['get', 'elevation'], DAsToHighlight]);
-    }
-    map.on('load', function() {
-      const showAllButton = document.getElementById('showAllDAsButton');
-      showAllButton.addEventListener('click', showAllDAs);
-      const highlightButton = document.getElementById('highlightDAsButton');
-      highlightButton.addEventListener('click', highlightDAs);
-    });
-    
-      
 
     </script>
   </body>
