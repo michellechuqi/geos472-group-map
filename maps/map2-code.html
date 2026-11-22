@@ -25,7 +25,6 @@
     <div id="mapid" style="width: 800px; height: 500px;"></div>
     <!-- Buttons  
     Flexbox from lab 2: https://github.com/michellechuqi/michellechuqi-web/blob/main/lab2/lab2-map.html-->
-
     <div id="buttons" style=" 
         width: 800px;
         margin: 15px 0;
@@ -38,7 +37,9 @@
           <span id="seaLevelValue">0 meters</span>
           <input id="seaLevelSlider" type="range" min="0" max="2" step="0.1" value="0">
         </p>
+        <button id="highlightButton">Highlight Affected DAs</button> <!-- Show All DAs -->
         <p><span id="affectedCount">0</span> people affected</p>
+
     </div>
 
     <script type="module">
@@ -126,6 +127,13 @@ maplibregl.addProtocol('pmtiles', protocol.tile);
       });
 
       map.addLayer({
+          id: 'DAs-highlighted',
+          type: 'fill',
+          source: 'DAs-source',
+          paint: '#fac167'
+      });
+
+      map.addLayer({
           id: 'DAs-boundaries',
           type: 'line',
           source: 'DAs-source',
@@ -146,7 +154,8 @@ maplibregl.addProtocol('pmtiles', protocol.tile);
     hoverPopup.setLngLat(event.lngLat);
     hoverPopup.setHTML(
       `DA name and location: ${DA.NAME}<br>
-       DA elevation (m above mean sea level): ${DA.elevation}`
+       DA elevation (m above mean sea level): ${DA.elevation}<br>
+       DA population: ${DA.population}`
       );
     hoverPopup.addTo(map);
   }
@@ -163,7 +172,8 @@ maplibregl.addProtocol('pmtiles', protocol.tile);
     clickPopup.setLngLat(event.lngLat);
     clickPopup.setHTML(
       `DA name and location: ${DA.NAME}<br>
-       DA elevation (m above mean sea level): ${DA.elevation}`
+       DA elevation (m above mean sea level): ${DA.elevation}<br>
+       DA population: ${DA.population}`
       );
     clickPopup.addTo(map);
     }
@@ -189,6 +199,42 @@ document.getElementById('showDEMButton').addEventListener('click', function() {
     document.getElementById('showDEMButton').textContent = 'Show DEM';
   }
 });
+
+// ===========================
+// F. CONFIGURING SLIDER:
+// ===========================
+let sliderValue = 0;
+document.getElementById('seaLevelSlider').addEventListener('change', function() {
+  sliderValue = Number(this.value);
+  document.getElementById('seaLevelValue').textContent = sliderValue + ' metres';
+  console.log('Projected sea level rise (m): ' + sliderValue);
+});
+
+// ==============================
+// G. HOW MANY PEOPLE AFFECTED?
+// ==============================
+
+// button text updates:
+let highlight = false;
+document.getElementById('highlightButton').addEventListener('click', function() {
+  console.log('Highlight/Show All button clicked');
+  if (highlight === false) {
+    highlight = true;
+    document.getElementById('highlightButton').textContent = 'Show All DAs';
+  } else {
+    highlight = false;
+    document.getElementById('highlightButton').textContent = 'Highlight Affected DAs'
+  };
+
+let affectedDAs = [];
+affectedDAs = DAs.features.filter(function(feature) {
+  return feature.proper
+})
+
+
+});
+
+
 
 
 

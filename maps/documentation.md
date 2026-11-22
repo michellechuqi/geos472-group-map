@@ -26,5 +26,6 @@
 ### From D. POPUPS
 * I asked how to configure a click listener to listen for multiple layers. It said to put the layers in an array.
 
-### From E. CONFIGURING showDEMButton:
+### From F. CONFIGURING SLIDER
+* I asked what is the event name of a move in the slider. It said it is 'change' and added that the keyword 'this.' will store that value.
 
