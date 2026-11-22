@@ -139,6 +139,8 @@
 
   // from Day 14 - Filtering 5 - A popup at the tree the mouse is over
   // I also referenced my work in Lab 2
+
+  // hover popup:
   const hoverPopup = new maplibregl.Popup({closeButton: false});
   function hoverDA(event) {
     const DA = event.features[0].properties;
@@ -156,6 +158,19 @@
   map.on('mousemove', 'DAs-layer', hoverDA);
   map.on('mouseleave', 'DAs-layer', leaveDA);
 
+  // click popup:
+  function clickDA(e) {
+    const DA = e.features[0].properties;
+    const clickPopup = new maplibregl.Popup();
+    clickPopup.setLngLat(e.lngLat);
+    clickPopup.setHTML(
+      `DA name and location: ${DA.NAME}<br>
+       DA population: ${DA.population}<br>
+       People per square km: ${DA.pd_rounded}`
+      );
+    clickPopup.addTo(map);
+    }
+  map.on('click', 'DAs-layer', clickDA);
 
     </script>
   </body>

@@ -33,8 +33,7 @@
         justify-content: space-between;
         gap: 10px;
         ">
-        <button id="showAllDAsButton">Show All DAs</button>
-        <button id="showDEMButton">Show DEM</button>
+        <button id="showDEMButton">Show DEM</button> <!-- Hide DEM -->
         <p>Projected sea level rise:
           <span id="seaLevelValue">0 meters</span>
           <input id="seaLevelSlider" type="range" min="0" max="2" step="0.1" value="0">
@@ -51,14 +50,16 @@
         container: 'mapid',                  // the id of the div above
         center: [-123.1140, 49.2608],    // [longitude, latitude] of Vancouver City Hall
         zoom: 14,
-        style: 'https://tiles.versatiles.org/assets/styles/colorful/style.json'   // free from https://makewithmaplibre.com/basemaps/styles/versatiles-colorful/
+        style: 'https://tiles.versatiles.org/assets/styles/colorful/style.json'   // free from https://makewithmaplibre.com/basemaps/styles/
       });
 
     // A module keeps its names to itself. This line lets you type map in the console under the code.
     window.map = map;
 
-    // url of raw data of Metro Van DAs from geos472-group-map GitHub repo:
-    const url = 'https://raw.githubusercontent.com/michellechuqi/geos472-group-map/main/DAs_nov21.geojson';
+    // url of raw data of Metro Van DAs:
+    const url = 'https://raw.githubusercontent.com/michellechuqi/geos472-group-map/main/webMapData.geojson';
+    // url of DEM pmtiles:
+    const DEMpmtilesURL = 'https://raw.githubusercontent.com/michellechuqi/geos472-group-map/main/for-DEM/fromCombinedDEM.pmtiles';
 
 // ========================== 
 // B. STYLING 
@@ -83,9 +84,14 @@
       'fill-outline-color': '#000000' // black
     };
 
-// ================================
-// C. ADDING SOURCES AND LAYERS I 
-// ================================
+// ==============================
+// C. ADDING SOURCES AND LAYERS
+// ==============================
+
+// registering PMTiles protocol:
+let protocol = new pmtiles.Protocol();
+maplibregl.addProtocol('pmtiles', protocol.tile);
+
   map.on('load', async function() { // map.on from Day 15-Turf 7 lecture
       const response = await fetch(url);
       const DAs = await response.json();
@@ -97,11 +103,34 @@
           attribution: 'Dissemination Areas in Metro Vancouver, Simply Analytics'
       });
       map.addLayer({
-          id: 'DAs-layer',
+          id: 'DAs-choropleth',
           type: 'fill',
           source: 'DAs-source',
           paint: elevationPaint
       });
+
+      map.addSource('dem-source', {
+        type: 'raster',
+        url: `pmtiles://${DEMpmtilesURL}`,
+        tileSize: 256,
+        attribution: 'DEMs of Metro Vancouver, GeoBC Branch'
+      });
+
+      map.addLayer({
+        id: 'dem-layer',
+        type: 'raster',
+        source: 'dem-source',
+        layout: {
+          visibility: 'none' // DEM .pmtiles is invisible until button is clicked
+        }
+      });
+
+      map.addLayer({
+          id: 'DAs-boundaries',
+          type: 'line',
+          source: 'DAs-source',
+      });
+
   });
 
 // ================================
@@ -109,47 +138,59 @@
 // ================================
   // from Day 14 - Filtering 5 - A popup at the tree the mouse is over
   // I also referenced my work in Lab 2
+
+  // hover popup:
   const hoverPopup = new maplibregl.Popup({closeButton: false});
   function hoverDA(event) {
     const DA = event.features[0].properties;
     hoverPopup.setLngLat(event.lngLat);
     hoverPopup.setHTML(
       `DA name and location: ${DA.NAME}<br>
-       DA elevation: ${DA.elevation}`
+       DA elevation (m above mean sea level): ${DA.elevation}`
       );
     hoverPopup.addTo(map);
   }
   function leaveDA() {
     hoverPopup.remove();
   }
-  map.on('mousemove', 'DAs-layer', hoverDA);
-  map.on('mouseleave', 'DAs-layer', leaveDA);
+  map.on('mousemove', 'DAs-choropleth', hoverDA);
+  map.on('mouseleave', 'DAs-choropleth', leaveDA);
+
+  // click popup:
+  function clickDA(event) {
+    const DA = event.features[0].properties;
+    const clickPopup = new maplibregl.Popup();
+    clickPopup.setLngLat(event.lngLat);
+    clickPopup.setHTML(
+      `DA name and location: ${DA.NAME}<br>
+       DA elevation (m above mean sea level): ${DA.elevation}`
+      );
+    clickPopup.addTo(map);
+    }
+  map.on('click', ['DAs-choropleth', 'dem-layer'], clickDA);
 
 
-// to-organise:
-// URL of the PMTiles file
-const DEMpmtilesURL = 'https://raw.githubusercontent.com/michellechuqi/geos472-group-map/main/for-DEM/fromCombinedDEM.pmtiles';
+// ================================
+// E. CONFIGURING showDEMButton:
+// ================================
+// based off Lab 2: https://github.com/michellechuqi/michellechuqi-web/blob/main/lab2/lab2-map.html
 
-// Register PMTiles protocol
-let protocol = new pmtiles.Protocol();
-maplibregl.addProtocol("pmtiles", protocol.tile);
-
-// Add DEM after map has loaded
-map.on('load', function() {
-
-  map.addSource('dem-background', {
-    type: 'raster',
-    url: `pmtiles://${DEMpmtilesURL}`,
-    tileSize: 256
-  });
-
-  map.addLayer({
-    id: 'dem-background-layer',
-    type: 'raster',
-    source: 'dem-background'
-  });
-
+// showDEMButton: 
+let DEMvisible = false;
+document.getElementById('showDEMButton').addEventListener('click', function() {
+  console.log('Show/Hide DEM clicked');
+  if (DEMvisible === false) {
+    map.setLayoutProperty('dem-layer', 'visibility', 'visible');
+    DEMvisible = true;
+    document.getElementById('showDEMButton').textContent = 'Hide DEM';
+  } else {
+    map.setLayoutProperty('dem-layer', 'visibility', 'none');
+    DEMvisible = false;
+    document.getElementById('showDEMButton').textContent = 'Show DEM';
+  }
 });
+
+
 
     </script>
   </body>

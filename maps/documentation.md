@@ -20,7 +20,11 @@
 * I didn't know how to create a class for one specific value. ChatGPT said to use 'case'.
 
 ### From C. ADDING SOURCES AND LAYERS
+* I didn't know a PMTiles protocol needed to be registered before being able to display the .pmtiles file.
 * in the first map.addLayer block, I didn't know 'stroke' should instead be 'fill-outline-color'.
 
-### From D. HIGHLIGHT DAs BUTTON
-* I didn't know how to set the filter the second time I use map.setFilter to look for values in the 'elevation' property lesser than or equal to the value stored in DAsToHighlight.
+### From D. POPUPS
+* I asked how to configure a click listener to listen for multiple layers. It said to put the layers in an array.
+
+### From E. CONFIGURING showDEMButton:
+
