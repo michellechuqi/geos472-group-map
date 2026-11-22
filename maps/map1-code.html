@@ -11,9 +11,37 @@
  A. MAP INITIALISATION 
  ========================== -->
 <html>
+  <style>
+    #legend {
+        position: absolute;
+        bottom: 30px;
+        right: 20px;
+        background: white;
+        padding: 15px;
+        border-radius: 5px;
+        z-index: 10;
+        box-shadow: 0 1px 5px rgba(0,0,0,0.3);
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px;
+        font-size: 13px;
+    }
+
+    .legend-colour {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        min-width: 20px;
+        margin-right: 10px;
+        border: 1px solid #999;
+    }
+  </style>
   <head>
     <meta charset="utf-8" />
-    <title>Map 1: WORK IN PROGRESS: Dissemination Areas in Metro Vancouver coloured by population as reported in the 2021 Census</title>
+    <title>Dissemination Areas in Metro Vancouver coloured by population density as reported in the 2021 Census</title>
 
     <!-- Load MapLibre's stylesheet (CSS). Its code (JavaScript) is loaded below, in the script. -->
     <link
@@ -24,68 +52,34 @@
     <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7.4.0/turf.min.js"></script>
   </head>
   <body>
-  <!-- CSS for the appearance of the page -->
-   <style>
-    #map-container {
-      display: flex;
-      gap: 15px;
-      align-items: flex-start;
-    }
-    #map {
-      flex: 1;
-      height: 600px;
-    }
-    #legend {
-      width: 180px;
-      padding: 12px;
-      background-color: white;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      font-family: Arial, sans-serif;
-    }
-    .legend-item {
-      display: flex;
-      align-items: center;
-      margin-bottom: 10px;
-      font-size: 13px;
-    }
-    .legend-colour {
-      width: 20px;
-      height: 20px;
-      margin-right: 10px;
-      border: 1px solid #999;
-      flex-shrink: 0;
-    }
-   </style>
     <!-- div container for web map: -->
     <div id="mapid" style="width: 800px; height: 500px;"></div>
+
     <!-- div container for map legend: -->
-    <div id="legend"></div>
-      <h3>Population, as reported in the 2021 Census</h3>
-      <h4>The map uses the natural breaks classification method.</h4>
+     <div id="legend">
+      <h3>Population density per Dissemination Area</h3>
+      <h4>Map uses the natural breaks classification method</h4>
       <div class="legend-item">
         <span class="legend-colour" style="background: #feebe2"></span>
-        Below 400 people
+        0 to 4318 people/km^2
       </div>
       <div class="legend-item">
         <span class="legend-colour" style="background: #fbb4b9"></span>
-        Between 401 and 484 people
+        4319 to 10816 people/km^2
       </div>
       <div class="legend-item">
         <span class="legend-colour" style="background: #f768a1"></span>
-        Between 485 and 576 people
+        10817 to 22860 people/km^2
       </div>
       <div class="legend-item">
         <span class="legend-colour" style="background: #c51b8a"></span>
-        Between 577 and 757 people
+        22861 to 43398 people/km^2
       </div>
       <div class="legend-item">
         <span class="legend-colour" style="background: #7a0177"></span>
-        Between 758 to 29669 people
+        43399 to 76693 people/km^2
       </div>
-
-
-
+     </div>
 
     <script type="module">
     // Load MapLibre's code (JavaScript). Version 6 is loaded as a module, with import.
@@ -100,22 +94,22 @@
     // A module keeps its names to itself. This line lets you type map in the console under the code.
     window.map = map;
     // url of raw data of Metro Van DAs from geos472-group-map GitHub repo:
-    const url = 'https://raw.githubusercontent.com/michellechuqi/geos472-group-map/main/maps/zonal01.geojson';
+    const url = 'https://raw.githubusercontent.com/michellechuqi/geos472-group-map/main/webMapData.geojson';
 
 
 // ========================== 
 // B. STYLING 
 // ==========================    
-      // symbology for DAs: choropleth colours vary by population
+      // symbology for pop density per DA: choropleth colours vary by population density
     const DAsPaint = {
-        'fill-color': ['step', ['get', 'population'], 
-        // ranges below from Simply Analytics
+        'fill-color': ['step', ['get', 'pop_density'], 
+        // ranges below from EDA
         // colour scheme from https://colorbrewer2.org/#type=sequential&scheme=RdPu&n=5
-        '#feebe2', // population below 3723: pale pink
-        3724, '#fbb4b9', // pop of 3724 to 4607
-        4608, '#f768a1', // pop of 4608 to 5446
-        5447, '#c51b8a', // pop of 5447 to 6590
-        6591, '#7a0177', // pop of 6591 to 29669: darkest pink
+        '#feebe2', // pd below 4318: pale pink
+        4319, '#fbb4b9', // pop of 4317 to 10816
+        10817, '#f768a1', 
+        22861, '#c51b8a', 
+        43399, '#7a0177', 
       ],
       'fill-opacity': 0.4,
       'fill-outline-color': '#000000' // black
@@ -132,7 +126,7 @@
         map.addSource('DAs-source', {
             type: 'geojson',
             data: url,
-            attribution: 'Dissemination Areas in Metro Vancouver, Simply Analytics'
+            attribution: 'Dissemination Areas in Metro Vancouver, Simply Analytics and 2021 Census'
         });
         map.addLayer({
             id: 'DAs-layer',
@@ -154,7 +148,8 @@
     hoverPopup.setLngLat(event.lngLat);
     hoverPopup.setHTML(
       `DA name and location: ${DA.NAME}<br>
-       DA population: ${DA.population}`
+       DA population: ${DA.population}<br>
+       People per 1 sq km: ${DA.pd_rounded}`
       );
     hoverPopup.addTo(map);
   }

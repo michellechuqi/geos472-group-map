@@ -23,7 +23,7 @@ library(dplyr)
 
 Reading GeoJSON:
 ```{r}
-DAs <- st_read('https://michellechuqi.github.io/geos472-group-map/maps/zonal01.geojson')
+DAs <- st_read('https://raw.githubusercontent.com/michellechuqi/geos472-group-map/main/webMapData.geojson')
 ```
 
 Examining elevation distribution.
@@ -60,7 +60,13 @@ Calculating natural breaks ranges for 5 classes:
 nb_elevation <- classIntervals(DAs$elevation, n = 5, style = 'jenks')
 nb_elevation$brks
 ```
-So elevation should be classed as 0 to 30, 31 to 69, 70 to 112, 123 to 187, 188 to 247.
+So elevation should be classed as:
+
+* 0 to 30, 
+* 31 to 69, 
+* 70 to 112, 
+* 123 to 187, 
+* 188 to 247.
 A special class is for DAs with elevation = 255.
 
 
@@ -85,18 +91,20 @@ ggplot(DAs, aes(x = population)) +
   )
 ```
 
-via boxplot:
+Summary statistics for population DENSITY:
 ```{r}
-ggplot(DAs, aes(x=population)) +
-  geom_boxplot(fill= 'steelblue', colour = 'black')
+summary(DAs$pop_density)
 ```
 
-TO-DO: 
+Calculating natural breaks ranges for 5 classes:
+```{r}
+nb_pd <- classIntervals(DAs$pop_density, n = 5, style = 'jenks')
+nb_pd$brks
+```
+Population density choropleth should be classed as:
 
-* need to remove DAs that are outliers for population because idk why they are above like 1000.
-
-General: 
-
-* calculate population DENSITY for Map1
-* might need to change how elevation is summarised: from majority to average?
-* complete elevation visualisation (Map2?)
+* 0 to 4318, 
+* 4319 to 10816, 
+* 10817 to 22860,
+* 22861 to 43398,
+* 43399 to 76693.
