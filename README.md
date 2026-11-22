@@ -25,3 +25,6 @@ It is a map of all dissemination areas in Metro Vancouver. User can zoom and pan
 
 ## Preview for map 2:
 It will be the same map, but with a slider/entry box to input projected sea level rise. The highlight button will show the DAs affected and the # of people affected.
+
+## Exploratory (aspatial) data analysis:
+https://michellechuqi.github.io/geos472-group-map/eda.html
