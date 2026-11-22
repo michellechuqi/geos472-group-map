@@ -17,16 +17,29 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/maplibre-gl@6.15.0/dist/maplibre-gl.css"
     />
-    <!-- Load Turf's code (JavaScript). After this line, the code on the page can use the name turf. -->
-    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7.4.0/turf.min.js"></script>
+    <!-- Loading PMTiles -->
+     <script src="https://unpkg.com/pmtiles@latest/dist/pmtiles.js"></script> 
   </head>
   <body>
     <!-- div element for web map: -->
     <div id="mapid" style="width: 800px; height: 500px;"></div>
-    <!-- Buttons  -->
-    <div id="controls" style="margin: 15px;">
-      <button id="contourButton">Toggle Contour View</button>
-      <button id="demButton">Toggle DEM View</button>
+    <!-- Buttons  
+    Flexbox from lab 2: https://github.com/michellechuqi/michellechuqi-web/blob/main/lab2/lab2-map.html-->
+
+    <div id="buttons" style=" 
+        width: 800px;
+        margin: 15px 0;
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        ">
+        <button id="showAllDAsButton">Show All DAs</button>
+        <button id="showDEMButton">Show DEM</button>
+        <p>Projected sea level rise:
+          <span id="seaLevelValue">0 meters</span>
+          <input id="seaLevelSlider" type="range" min="0" max="2" step="0.1" value="0">
+        </p>
+        <p><span id="affectedCount">0</span> people affected</p>
     </div>
 
     <script type="module">
@@ -94,7 +107,6 @@
 // ================================
 // D. POPUPS  
 // ================================
-
   // from Day 14 - Filtering 5 - A popup at the tree the mouse is over
   // I also referenced my work in Lab 2
   const hoverPopup = new maplibregl.Popup({closeButton: false});
@@ -112,6 +124,32 @@
   }
   map.on('mousemove', 'DAs-layer', hoverDA);
   map.on('mouseleave', 'DAs-layer', leaveDA);
+
+
+// to-organise:
+// URL of the PMTiles file
+const DEMpmtilesURL = 'https://raw.githubusercontent.com/michellechuqi/geos472-group-map/main/for-DEM/fromCombinedDEM.pmtiles';
+
+// Register PMTiles protocol
+let protocol = new pmtiles.Protocol();
+maplibregl.addProtocol("pmtiles", protocol.tile);
+
+// Add DEM after map has loaded
+map.on('load', function() {
+
+  map.addSource('dem-background', {
+    type: 'raster',
+    url: `pmtiles://${DEMpmtilesURL}`,
+    tileSize: 256
+  });
+
+  map.addLayer({
+    id: 'dem-background-layer',
+    type: 'raster',
+    source: 'dem-background'
+  });
+
+});
 
     </script>
   </body>
