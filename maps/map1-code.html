@@ -1,7 +1,4 @@
 <!DOCTYPE html>
-<!-- THIS MAP IS MISLEADING: choropleth varies by population and not population density. I will fix this
- later on ArcGIS. -->
- 
 <!-- Code varies from lectures:
  * 472 - MapLibre - Filtering 2 - A way to highlight trees by taxa
  * 472 - MapLibre - Turf 7 - The user sets the distance
@@ -61,23 +58,23 @@
       <h4>Map uses the natural breaks classification method</h4>
       <div class="legend-item">
         <span class="legend-colour" style="background: #feebe2"></span>
-        0 to 4318 people/km^2
+        0 to 4318 people per square km
       </div>
       <div class="legend-item">
         <span class="legend-colour" style="background: #fbb4b9"></span>
-        4319 to 10816 people/km^2
+        4319 to 10816 people per square km
       </div>
       <div class="legend-item">
         <span class="legend-colour" style="background: #f768a1"></span>
-        10817 to 22860 people/km^2
+        10817 to 22860 people per square km
       </div>
       <div class="legend-item">
         <span class="legend-colour" style="background: #c51b8a"></span>
-        22861 to 43398 people/km^2
+        22861 to 43398 people per square km
       </div>
       <div class="legend-item">
         <span class="legend-colour" style="background: #7a0177"></span>
-        43399 to 76693 people/km^2
+        43399 to 76693 people per square km
       </div>
      </div>
 
@@ -149,7 +146,7 @@
     hoverPopup.setHTML(
       `DA name and location: ${DA.NAME}<br>
        DA population: ${DA.population}<br>
-       People per 1 sq km: ${DA.pd_rounded}`
+       People per square km: ${DA.pd_rounded}`
       );
     hoverPopup.addTo(map);
   }
