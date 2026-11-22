@@ -10,7 +10,7 @@ The relevant tiles that cover all of Metro Vancouver: 92g01w, 02ew, 03ew, 06ew, 
 Metro Vancouver CMACA, dissemination areas, population as of 2021 downloaded from Simply Analytics. Simply Analytics uses data from the 2021 Canada Census.
 I then added elevation data from the DEMs to the shapefiles of DAs.
 
-Properties:
+**Properties**:
 * NAME: DAID and region
 * population: # of residents in that DA
 * elevation: majority of land in metres above mean sea level
@@ -22,3 +22,6 @@ Properties:
 To view map: https://michellechuqi.github.io/geos472-group-map/maps/map1-code.html
 
 It is a map of all dissemination areas in Metro Vancouver. User can zoom and pan around. They can hover over a DA and see its name and location, the population, and the # of people per 1 sq km. The choropleth values are by population density - user can refer to the legend for classification details.
+
+## Preview for map 2:
+It will be the same map, but with a slider/entry box to input projected sea level rise. The highlight button will show the DAs affected and the # of people affected.
