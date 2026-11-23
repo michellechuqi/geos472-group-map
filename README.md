@@ -27,6 +27,9 @@ It is a map of all dissemination areas in Metro Vancouver. User can zoom and pan
 To view map: https://michellechuqi.github.io/geos472-group-map/maps/map2-code.html
 
 It is a map of all dissemination areas in Metro Vancouver. User can zoom and pan around. They can hover over a DA and see its name and location, the elevation, and the population. The choropleth values are elevation values in metres above mean sea level - user can refer to the legend for further details.
+
+## maps/documentation.md
+The places in the maps' code files where AI was consulted. Other consultations are recorded as comments in the code files themselves.
  
 
 ## Exploratory (aspatial) data analysis:
