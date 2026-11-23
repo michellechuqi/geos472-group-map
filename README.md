@@ -23,8 +23,9 @@ To view map: https://michellechuqi.github.io/geos472-group-map/maps/map1-code.ht
 
 It is a map of all dissemination areas in Metro Vancouver. User can zoom and pan around. They can hover over a DA and see its name and location, the population, and the # of people per 1 sq km. The choropleth values are by population density - user can refer to the legend for classification details.
 
-## Preview for map 2:
-It will be the same map, but with a slider/entry box to input projected sea level rise. The highlight button will show the DAs affected and the # of people affected.
+## maps/map2-code.html
+To view map: https://michellechuqi.github.io/geos472-group-map/maps/map2-code.html
+ 
 
 ## Exploratory (aspatial) data analysis:
 https://michellechuqi.github.io/geos472-group-map/aspatial-EDA/eda.html
