@@ -4,110 +4,115 @@
  * 472 - MapLibre - Turf 7 - The user sets the distance
  Other sources are either mentioned here or in the README. -->
 
- <!-- =====================
+<!-- =====================
  A. MAP INITIALISATION 
  ========================== -->
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Map 2: Visualisation of elevation across Metro Vancouver</title>
 
-    <!-- Load MapLibre's stylesheet (CSS). Its code (JavaScript) is loaded below, in the script. -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/maplibre-gl@6.15.0/dist/maplibre-gl.css"
-    />
-    <!-- Loading PMTiles -->
-     <script src="https://unpkg.com/pmtiles@latest/dist/pmtiles.js"></script> 
-  </head>
-  <body>
-    <!-- div element for web map: -->
-    <div id="mapid" style="width: 800px; height: 500px;"></div>
-    <!-- Buttons  
-    Flexbox from lab 2: https://github.com/michellechuqi/michellechuqi-web/blob/main/lab2/lab2-map.html-->
-    <div id="buttons" style=" 
+<head>
+  <meta charset="utf-8" />
+  <title>Map 2: Visualisation of elevation across Metro Vancouver</title>
+
+  <!-- Load MapLibre's stylesheet (CSS). Its code (JavaScript) is loaded below, in the script. -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@6.15.0/dist/maplibre-gl.css" />
+  <!-- Loading PMTiles -->
+  <script src="https://unpkg.com/pmtiles@latest/dist/pmtiles.js"></script>
+</head>
+
+<body>
+  <!-- div element for web map: -->
+  <div id="mapid" style="width: 800px; height: 500px;"></div>
+  <!-- Buttons  
+  Flexbox from lab 2: https://github.com/michellechuqi/michellechuqi-web/blob/main/lab2/lab2-map.html-->
+  <div id="buttons" style=" 
         width: 800px;
         margin: 15px 0;
         display: flex;
         justify-content: space-between;
         gap: 10px;
         ">
-        <button id="showDEMButton">Show DEM</button> <!-- Hide DEM -->
-        <p>Projected sea level rise:
-          <span id="seaLevelValue">0 meters</span>
-          <input id="seaLevelSlider" type="range" min="0" max="2" step="0.1" value="0">
-        </p>
-        <button id="highlightButton">Highlight Affected DAs</button> <!-- Show All DAs -->
-        <p><span id="affectedCount">0</span> people affected</p>
+    <button id="showDEMButton">Show DEM</button> <!-- Hide DEM -->
+    <p>Projected sea level rise:
+      <span id="seaLevelValue">0 meters</span>
+      <input id="seaLevelSlider" type="range" min="0" max="5" step="0.1" value="0">
+    </p>
+    <button id="highlightButton">Highlight Affected DAs</button> <!-- Show All DAs -->
+    <p><span id="affectedCount">0</span> people affected</p>
+  </div>
 
-    </div>
-
-    <script type="module">
-      // Load MapLibre's code (JavaScript). Version 6 is loaded as a module, with import.
+  <script type="module">
+    // Load MapLibre's code (JavaScript). Version 6 is loaded as a module, with import.
     import * as maplibregl from 'https://cdn.jsdelivr.net/npm/maplibre-gl@6.15.0/dist/maplibre-gl.mjs';
 
     // Make a map with new maplibregl.Map(), and keep it in the variable map.
     const map = new maplibregl.Map({
-        container: 'mapid',                  // the id of the div above
-        center: [-123.1140, 49.2608],    // [longitude, latitude] of Vancouver City Hall
-        zoom: 14,
-        style: 'https://tiles.versatiles.org/assets/styles/colorful/style.json'   // free from https://makewithmaplibre.com/basemaps/styles/
-      });
+      container: 'mapid',              // the id of the div above
+      center: [-123.1140, 49.2608],    // [longitude, latitude] of Vancouver City Hall
+      zoom: 14,
+      style: 'https://tiles.versatiles.org/assets/styles/colorful/style.json'   // free from https://makewithmaplibre.com/basemaps/styles/
+    });
 
     // A module keeps its names to itself. This line lets you type map in the console under the code.
     window.map = map;
 
     // url of raw data of Metro Van DAs:
     const url = 'https://raw.githubusercontent.com/michellechuqi/geos472-group-map/main/webMapData.geojson';
+    let DAs;
     // url of DEM pmtiles:
+    // making mbtiles then converting to pmtiles: Day 12 lecture
     const DEMpmtilesURL = 'https://raw.githubusercontent.com/michellechuqi/geos472-group-map/main/for-DEM/fromCombinedDEM.pmtiles';
 
-// ========================== 
-// B. STYLING 
-// ==========================    
+    // =============
+    // B. STYLING 
+    // =============    
     // symbology for DAs: choropleth colours vary by population
     const elevationPaint = {
       'fill-color': [
-        'case', 
+        'case',
         ['==', ['get', 'elevation'], 255], '#bdbdbd', // for DAs with specific elevation of 255
 
-        ['step', ['get', 'elevation'], 
-          // ranges below from R (see documentation)
+        ['step', ['get', 'elevation'],
+          // ranges below from https://michellechuqi.github.io/geos472-group-map/aspatial-EDA/eda.html
           // colour scheme from https://colorbrewer2.org/#type=sequential&scheme=RdPu&n=5
           '#ffffd4', // population 0 to 30: pale orange
           31, '#fed98e', // pop of 31 to 69
           70, '#fe9929', // pop of 70 to 112
           123, '#d95f0e', // pop of 123 to 187
           188, '#993404', // pop of 188 to 247: darkest orange
-          ]
+        ]
       ],
       'fill-opacity': 0.6,
       'fill-outline-color': '#000000' // black
     };
 
-// ==============================
-// C. ADDING SOURCES AND LAYERS
-// ==============================
+    const highlightPaint = {
+      'fill-color': '#e05361',
+      'fill-opacity': 0.7
+    };
 
-// registering PMTiles protocol:
-let protocol = new pmtiles.Protocol();
-maplibregl.addProtocol('pmtiles', protocol.tile);
+    // ==============================
+    // C. ADDING SOURCES AND LAYERS
+    // ==============================
+    // registering PMTiles protocol:
+    let protocol = new pmtiles.Protocol();
+    maplibregl.addProtocol('pmtiles', protocol.tile);
 
-  map.on('load', async function() { // map.on from Day 15-Turf 7 lecture
+    map.on('load', async function () { // map.on from Day 15-Turf 7 lecture
       const response = await fetch(url);
-      const DAs = await response.json();
+      DAs = await response.json();
       console.log(DAs.features.length + ' Dissemination Areas');
+      console.log(DAs.type);
 
       map.addSource('DAs-source', {
-          type: 'geojson',
-          data: url,
-          attribution: 'Dissemination Areas in Metro Vancouver, Simply Analytics'
+        type: 'geojson',
+        data: url,
+        attribution: 'Dissemination Areas in Metro Vancouver, Simply Analytics'
       });
       map.addLayer({
-          id: 'DAs-choropleth',
-          type: 'fill',
-          source: 'DAs-source',
-          paint: elevationPaint
+        id: 'DAs-choropleth',
+        type: 'fill',
+        source: 'DAs-source',
+        paint: elevationPaint
       });
 
       map.addSource('dem-source', {
@@ -116,7 +121,6 @@ maplibregl.addProtocol('pmtiles', protocol.tile);
         tileSize: 256,
         attribution: 'DEMs of Metro Vancouver, GeoBC Branch'
       });
-
       map.addLayer({
         id: 'dem-layer',
         type: 'raster',
@@ -126,118 +130,131 @@ maplibregl.addProtocol('pmtiles', protocol.tile);
         }
       });
 
+      map.addSource('DAs-highlighted-source', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: []
+        }
+      });
       map.addLayer({
-          id: 'DAs-highlighted',
-          type: 'fill',
-          source: 'DAs-source',
-          paint: '#fac167'
+        id: 'DAs-highted-layer',
+        type: 'fill',
+        source: 'DAs-highlighted-source',
+        paint: highlightPaint
       });
 
       map.addLayer({
-          id: 'DAs-boundaries',
-          type: 'line',
-          source: 'DAs-source',
+        id: 'DAs-boundaries',
+        type: 'line',
+        source: 'DAs-source',
       });
 
-  });
+    });
 
-// ================================
-// D. POPUPS  
-// ================================
-  // from Day 14 - Filtering 5 - A popup at the tree the mouse is over
-  // I also referenced my work in Lab 2
+    // =============
+    // D. POPUPS  
+    // =============
+    // from Day 14 - Filtering 5 - A popup at the tree the mouse is over
+    // I also referenced my work in Lab 2
 
-  // hover popup:
-  const hoverPopup = new maplibregl.Popup({closeButton: false});
-  function hoverDA(event) {
-    const DA = event.features[0].properties;
-    hoverPopup.setLngLat(event.lngLat);
-    hoverPopup.setHTML(
-      `DA name and location: ${DA.NAME}<br>
+    // hover popup:
+    const hoverPopup = new maplibregl.Popup({ closeButton: false });
+    function hoverDA(event) {
+      const DA = event.features[0].properties;
+      hoverPopup.setLngLat(event.lngLat);
+      hoverPopup.setHTML(
+        `DA name and location: ${DA.NAME}<br>
        DA elevation (m above mean sea level): ${DA.elevation}<br>
        DA population: ${DA.population}`
       );
-    hoverPopup.addTo(map);
-  }
-  function leaveDA() {
-    hoverPopup.remove();
-  }
-  map.on('mousemove', 'DAs-choropleth', hoverDA);
-  map.on('mouseleave', 'DAs-choropleth', leaveDA);
-
-  // click popup:
-  function clickDA(event) {
-    const DA = event.features[0].properties;
-    const clickPopup = new maplibregl.Popup();
-    clickPopup.setLngLat(event.lngLat);
-    clickPopup.setHTML(
-      `DA name and location: ${DA.NAME}<br>
-       DA elevation (m above mean sea level): ${DA.elevation}<br>
-       DA population: ${DA.population}`
-      );
-    clickPopup.addTo(map);
+      hoverPopup.addTo(map);
     }
-  map.on('click', ['DAs-choropleth', 'dem-layer'], clickDA);
+    function leaveDA() {
+      hoverPopup.remove();
+    }
+    map.on('mousemove', 'DAs-choropleth', hoverDA);
+    map.on('mouseleave', 'DAs-choropleth', leaveDA);
+
+    // click popup:
+    function clickDA(event) {
+      const DA = event.features[0].properties;
+      const clickPopup = new maplibregl.Popup();
+      clickPopup.setLngLat(event.lngLat);
+      clickPopup.setHTML(
+        `DA name and location: ${DA.NAME}<br>
+       DA elevation (m above mean sea level): ${DA.elevation}<br>
+       DA population: ${DA.population}`
+      );
+      clickPopup.addTo(map);
+    }
+    map.on('click', ['DAs-choropleth', 'dem-layer'], clickDA);
 
 
-// ================================
-// E. CONFIGURING showDEMButton:
-// ================================
-// based off Lab 2: https://github.com/michellechuqi/michellechuqi-web/blob/main/lab2/lab2-map.html
+    // ================================
+    // E. CONFIGURING showDEMButton:
+    // ================================
+    // based off Lab 2: https://github.com/michellechuqi/michellechuqi-web/blob/main/lab2/lab2-map.html
+    let DEMvisible = false;
+    document.getElementById('showDEMButton').addEventListener('click', function () {
+      console.log('Show/Hide DEM clicked');
+      if (DEMvisible === false) {
+        map.setLayoutProperty('dem-layer', 'visibility', 'visible');
+        DEMvisible = true;
+        document.getElementById('showDEMButton').textContent = 'Hide DEM';
+      } else {
+        map.setLayoutProperty('dem-layer', 'visibility', 'none');
+        DEMvisible = false;
+        document.getElementById('showDEMButton').textContent = 'Show DEM';
+      }
+    });
 
-// showDEMButton: 
-let DEMvisible = false;
-document.getElementById('showDEMButton').addEventListener('click', function() {
-  console.log('Show/Hide DEM clicked');
-  if (DEMvisible === false) {
-    map.setLayoutProperty('dem-layer', 'visibility', 'visible');
-    DEMvisible = true;
-    document.getElementById('showDEMButton').textContent = 'Hide DEM';
-  } else {
-    map.setLayoutProperty('dem-layer', 'visibility', 'none');
-    DEMvisible = false;
-    document.getElementById('showDEMButton').textContent = 'Show DEM';
-  }
-});
+    // ===========================
+    // F. CONFIGURING SLIDER:
+    // ===========================
+    let sliderValue = 0;
+    document.getElementById('seaLevelSlider').addEventListener('change', function () {
+      sliderValue = Number(this.value);
+      document.getElementById('seaLevelValue').textContent = sliderValue + ' metres';
+      console.log('Projected sea level rise (m): ' + sliderValue);
+    });
 
-// ===========================
-// F. CONFIGURING SLIDER:
-// ===========================
-let sliderValue = 0;
-document.getElementById('seaLevelSlider').addEventListener('change', function() {
-  sliderValue = Number(this.value);
-  document.getElementById('seaLevelValue').textContent = sliderValue + ' metres';
-  console.log('Projected sea level rise (m): ' + sliderValue);
-});
-
-// ==============================
-// G. HOW MANY PEOPLE AFFECTED?
-// ==============================
-
-// button text updates:
-let highlight = false;
-document.getElementById('highlightButton').addEventListener('click', function() {
-  console.log('Highlight/Show All button clicked');
-  if (highlight === false) {
-    highlight = true;
-    document.getElementById('highlightButton').textContent = 'Show All DAs';
-  } else {
-    highlight = false;
-    document.getElementById('highlightButton').textContent = 'Highlight Affected DAs'
-  };
-
-let affectedDAs = [];
-affectedDAs = DAs.features.filter(function(feature) {
-  return feature.proper
-})
-
-
-});
+    // ==============================
+    // G. HOW MANY PEOPLE AFFECTED?
+    // ==============================
+    let highlight = false;
+    let affectedDAs = [];
+    let peopleAffected = 0;
+    document.getElementById('highlightButton').addEventListener('click', function () {
+      console.log('Highlight/Show All button clicked');
+      if (highlight === false) {
+        highlight = true;
+        document.getElementById('highlightButton').textContent = 'Show All DAs';
+        affectedDAs = [];
+        peopleAffected = 0;
+        for (let i = 0; i < DAs.features.length; i = i + 1) {
+          if (DAs.features[i].properties.elevation <= sliderValue) {
+            affectedDAs.push(DAs.features[i]);
+            peopleAffected = peopleAffected + DAs.features[i].properties.population;
+            document.getElementById('affectedCount').textContent = peopleAffected;
+          };
+          map.getSource('DAs-highlighted-source').setData({
+            type: 'FeatureCollection',
+            features: affectedDAs
+          });
+        };
+      } else {
+        highlight = false;
+        document.getElementById('highlightButton').textContent = 'Highlight Affected DAs'
+        map.getSource('DAs-highlighted-source').setData({
+          type: 'FeatureCollection',
+          features: []
+        });
+      };
+    });
 
 
 
-
-
-    </script>
-  </body>
+</script>
+</body>
 </html>
