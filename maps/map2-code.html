@@ -8,6 +8,34 @@
  A. MAP INITIALISATION 
  ========================== -->
 <html>
+<style>
+  #legend {
+    position: absolute;
+    bottom: 30px;
+    right: 20px;
+    background: white;
+    padding: 15px;
+    border-radius: 5px;
+    z-index: 10;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+
+  .legend-colour {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    margin-right: 10px;
+    border: 1px solid #999;
+  }
+</style>
 
 <head>
   <meta charset="utf-8" />
@@ -38,6 +66,33 @@
     </p>
     <button id="highlightButton">Highlight Affected DAs</button> <!-- Show All DAs -->
     <p><span id="affectedCount">0</span> people affected</p>
+  </div>
+
+  <!-- div container for map legend: -->
+  <div id="legend">
+    <h3>Elevation per Dissemination Area</h3>
+    <h4>Choropleth colours are from the majority <br> elevation value extracted from the DEMs.</h4>
+    <h4>Map uses the natural breaks <br> classification method</h4>
+    <div class="legend-item">
+      <span class="legend-colour" style="background: #ffffd4"></span>
+      0 to 30 metres above mean sea level
+    </div>
+    <div class="legend-item">
+      <span class="legend-colour" style="background: #fed98e"></span>
+      31 to 69 metres above mean sea level
+    </div>
+    <div class="legend-item">
+      <span class="legend-colour" style="background: #fe9929"></span>
+      70 to 112 metres above mean sea level
+    </div>
+    <div class="legend-item">
+      <span class="legend-colour" style="background: #d95f0e"></span>
+      123 to 187 metres above mean sea level
+    </div>
+    <div class="legend-item">
+      <span class="legend-colour" style="background: #993404"></span>
+      188 to 247 metres above mean sea level
+    </div>
   </div>
 
   <script type="module">
@@ -74,11 +129,11 @@
         ['step', ['get', 'elevation'],
           // ranges below from https://michellechuqi.github.io/geos472-group-map/aspatial-EDA/eda.html
           // colour scheme from https://colorbrewer2.org/#type=sequential&scheme=RdPu&n=5
-          '#ffffd4', // population 0 to 30: pale orange
-          31, '#fed98e', // pop of 31 to 69
-          70, '#fe9929', // pop of 70 to 112
-          123, '#d95f0e', // pop of 123 to 187
-          188, '#993404', // pop of 188 to 247: darkest orange
+          '#ffffd4', // elevation 0 to 30: pale orange
+          31, '#fed98e', // elevation of 31 to 69
+          70, '#fe9929', // elevation of 70 to 112
+          123, '#d95f0e', // elevation of 123 to 187
+          188, '#993404', // elevation of 188 to 247: darkest orange
         ]
       ],
       'fill-opacity': 0.6,
@@ -255,6 +310,7 @@
 
 
 
-</script>
+  </script>
 </body>
+
 </html>
